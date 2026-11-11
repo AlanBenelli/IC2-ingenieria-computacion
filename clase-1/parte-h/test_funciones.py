@@ -1,5 +1,5 @@
 import pytest
-from funciones import aprobo, estadisticas, promedio
+from funciones import aprobo, estadisticas, promedio, analizar_peliculas
 
 def test_promedio_valores_normales():
   notas = [7, 4, 9, 10, 6]
@@ -44,3 +44,26 @@ def test_promedio_lista_vacia():
 
 def test_aprobo_varios_casos(notas, esperado):
   assert aprobo(notas) == esperado
+
+def test_analizar_peliculas():
+  peliculas = [
+      {"titulo": "Dune", "puntaje": "8.0"},
+      {"titulo": "Battleship", "puntaje": "5.8"},
+      {"titulo": "A Quiet Place", "puntaje": "7.5"},
+  ]
+
+  resultado = analizar_peliculas(peliculas)
+
+  assert resultado["cantidad"] == 3
+  assert resultado["promedio"] == pytest.approx(7.1)
+  assert resultado["mejor"]["titulo"] == "Dune"
+  assert resultado["peor"]["titulo"] == "Battleship"
+
+
+def test_analizar_peliculas_lista_vacia():
+  resultado = analizar_peliculas([])
+
+  assert resultado["cantidad"] == 0
+  assert resultado["promedio"] == 0
+  assert resultado["mejor"] is None
+  assert resultado["peor"] is None

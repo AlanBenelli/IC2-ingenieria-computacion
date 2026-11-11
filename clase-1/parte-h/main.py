@@ -1,37 +1,52 @@
-# main.py
 import csv
-from funciones import obtener_valor  
+from funciones import analizar_peliculas
+from pathlib import Path
 
 
 def cargar_peliculas(nombre_archivo):
-  """Lee el archivo CSV y devuelve una lista de diccionarios con las películas."""
   peliculas = []
+
   with open(nombre_archivo, mode="r", encoding="utf-8") as archivo:
     lector = csv.DictReader(archivo)
+
     for fila in lector:
       peliculas.append(fila)
+
   return peliculas
 
 
 def main():
-  print("--- INICIO DEL MINI-PROYECTO ---")
+  print("--- ANALISIS DE PELICULAS ---")
 
-  archivo_csv = "peliculas.csv"
+  archivo_csv = Path(__file__).parent / "peliculas.csv"
+
   try:
     peliculas = cargar_peliculas(archivo_csv)
-    print(f"Se cargaron {len(peliculas)} películas correctamente.\n")
   except FileNotFoundError:
-    print(
-        f"No se encontró el archivo {archivo_csv}. Asegurate de tenerlo en la"
-        " carpeta."
-    )
+    print(f"No se encontro el archivo {archivo_csv}.")
     return
 
-  print("Listado y procesamiento de datos:")
-  for pelicula in peliculas:
-    titulo = pelicula.get("titulo", "Sin título")
-    anio = pelicula.get("anio", "Desconocido")
-    print(f"- {titulo} ({anio})")
+  peliculas_ordenadas = sorted(peliculas, key=lambda pelicula: pelicula["titulo"])
+
+  print("\nListado de peliculas:")
+  for pelicula in peliculas_ordenadas:
+    print(f"- {pelicula['titulo']} ({pelicula['anio']})")
+
+  resultado = analizar_peliculas(peliculas)
+
+  print("\nEstadisticas:")
+  print(f"Cantidad de peliculas: {resultado['cantidad']}")
+  print(f"Puntaje promedio: {resultado['promedio']:.2f}")
+
+  if resultado["mejor"] is not None:
+    print(
+        f"Mejor valorada: {resultado['mejor']['titulo']} "
+        f"({resultado['mejor']['puntaje']})"
+    )
+    print(
+        f"Peor valorada: {resultado['peor']['titulo']} "
+        f"({resultado['peor']['puntaje']})"
+    )
 
   print("\n--- FIN DEL PROGRAMA ---")
 

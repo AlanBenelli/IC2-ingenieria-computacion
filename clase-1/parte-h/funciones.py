@@ -16,6 +16,23 @@ def estadisticas(notas):
       "minimo": min(notas),
   }
 
-pelicula = {"titulo": "Transformers: El ùltimo caballero", "anio": 2017, "director": "Michael Bay"}
+def analizar_peliculas(peliculas):
+  if not peliculas:
+    return {
+        "cantidad": 0,
+        "promedio": 0,
+        "mejor": None,
+        "peor": None,
+    }
 
-duracion = pelicula.get("duracion", "desconocido")
+  puntajes = [float(pelicula["puntaje"]) for pelicula in peliculas]
+
+  mejor = max(peliculas, key=lambda pelicula: float(pelicula["puntaje"]))
+  peor = min(peliculas, key=lambda pelicula: float(pelicula["puntaje"]))
+
+  return {
+      "cantidad": len(peliculas),
+      "promedio": sum(puntajes) / len(puntajes),
+      "mejor": mejor,
+      "peor": peor,
+  }
